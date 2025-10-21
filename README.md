@@ -69,97 +69,160 @@ Next.js-based SaaS starter kit saves you months of development by starting you o
 <img width="200" alt="Deploy to DO" src="https://www.deploytodo.com/do-btn-blue-ghost.svg" />
 </a>
 
-## ✨ Getting Started
-
-Please follow these simple steps to get a local copy up and running.
+## 📦 Installation
 
 ### Prerequisites
 
-- Node.js (Version: >=18.x)
-- PostgreSQL
-- NPM
-- Docker compose
+Before you begin, ensure you have the following installed:
 
-### Development
+- **Node.js** (Version: >=18.x) - [Download](https://nodejs.org/)
+- **npm** (comes with Node.js)
+- **PostgreSQL** (Version: >=13.x) - [Download](https://www.postgresql.org/download/)
+- **Docker** and **Docker Compose** (Optional, for easy database setup) - [Download](https://www.docker.com/get-started)
 
-#### 1. Setup
+### Quick Start
 
-- [Fork](https://github.com/boxyhq/saas-starter-kit/fork) the repository
-- Clone the repository by using this command:
+Follow these steps to get the application running locally:
+
+#### 1. Clone the repository
+
+First, fork and clone the repository:
 
 ```bash
+# Fork the repository on GitHub, then clone your fork
 git clone https://github.com/<your_github_username>/saas-starter-kit.git
-```
-
-#### 2. Go to the project folder
-
-```bash
 cd saas-starter-kit
 ```
 
-#### 3. Install dependencies
+#### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-#### 4. Set up your .env file
+#### 3. Set up environment variables
 
-Duplicate `.env.example` to `.env`.
+Copy the example environment file and configure it:
 
 ```bash
 cp .env.example .env
 ```
 
-#### 5. Create a database (Optional)
+**Required environment variables for basic setup:**
 
-To make the process of installing dependencies easier, we offer a `docker-compose.yml` with a Postgres container.
+Open `.env` and configure at minimum:
+
+```bash
+# NextAuth Configuration
+NEXTAUTH_URL=http://localhost:4002
+NEXTAUTH_SECRET=<generate-with-openssl-rand-base64-32>
+
+# Database (if using docker-compose, use this URL)
+DATABASE_URL=postgresql://admin:admin@localhost:5432/saas-starter-kit
+
+# Application URL
+APP_URL=http://localhost:4002
+```
+
+> **Note:** Generate a secure `NEXTAUTH_SECRET` by running:
+> ```bash
+> openssl rand -base64 32
+> ```
+
+#### 4. Set up the database
+
+**Option A: Using Docker (Recommended for development)**
+
+Start a PostgreSQL database using Docker Compose:
 
 ```bash
 docker-compose up -d
 ```
 
-#### 6. Set up database schema
+This will start a PostgreSQL database on port 5432 with the credentials specified in `docker-compose.yml`.
+
+**Option B: Using existing PostgreSQL installation**
+
+If you have PostgreSQL installed locally, create a database and update the `DATABASE_URL` in `.env`:
+
+```bash
+# Create a new database
+createdb saas-starter-kit
+
+# Update DATABASE_URL in .env
+DATABASE_URL=postgresql://<YOUR_USER>:<YOUR_PASSWORD>@localhost:5432/saas-starter-kit
+```
+
+#### 5. Initialize the database schema
+
+Push the Prisma schema to your database:
 
 ```bash
 npx prisma db push
 ```
 
-#### 7. Start the server
+This command will create all the necessary tables in your database.
 
-In a development environment:
+#### 6. Start the development server
 
 ```bash
 npm run dev
 ```
 
-#### 8. Start the Prisma Studio
+The application will be available at [http://localhost:4002](http://localhost:4002)
 
-Prisma Studio is a visual editor for the data in your database.
+#### 7. Access Prisma Studio (Optional)
+
+Prisma Studio is a visual editor for your database:
 
 ```bash
 npx prisma studio
 ```
 
-#### 9. Testing
+This will open Prisma Studio at [http://localhost:5555](http://localhost:5555)
 
-We are using [Playwright](https://playwright.dev/) to execute E2E tests. Add all tests inside the `/tests` folder.
+## ✨ Getting Started
 
-Update `playwright.config.ts` to change the playwright configuration.
+### Email Configuration (Optional)
 
-##### Install Playwright dependencies
+To enable email features (magic link login, invitations, etc.), configure SMTP settings in `.env`:
+
+```bash
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=your-email@example.com
+SMTP_PASSWORD=your-password
+SMTP_FROM=noreply@example.com
+```
+
+Popular SMTP providers:
+- [AWS SES](https://aws.amazon.com/ses/)
+- [SendGrid](https://sendgrid.com/)
+- [Resend](https://resend.com/)
+
+### Testing
+
+We use [Playwright](https://playwright.dev/) for E2E tests.
+
+#### Install Playwright dependencies
 
 ```bash
 npm run playwright:update
 ```
 
-##### Run E2E tests
+#### Run E2E tests
 
 ```bash
 npm run test:e2e
 ```
 
-_Note: HTML test report is generated inside the `report` folder. Currently supported browsers for test execution `chromium` and `firefox`_
+_Note: HTML test reports are generated in the `report` folder. Supported browsers: `chromium` and `firefox`_
+
+#### Run unit tests
+
+```bash
+npm run test
+```
 
 ## ⚙️ Feature configuration
 
